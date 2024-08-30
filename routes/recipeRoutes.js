@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authenticateUser = require('../middlewares/authMiddleware');
 const recipeController = require('../controllers/recipeController');
-const upload = require('../middleware/uploadMiddleware');
+const upload = require('../middlewares/uploadMiddleware');
 
 router.get('/', recipeController.getRecipes);
 router.get('/:id', recipeController.getRecipeById);

@@ -14,20 +14,20 @@ const getRecipeById = async (id) => {
 
 
 const addRecipe = async (recipe) => {
-  const { name, description, ingredients, steps } = recipe;
+  const { title, ingredients, instructions, image } = recipe;
   const [result] = await db.query(
-    'INSERT INTO recipes (name, description, ingredients, steps) VALUES (?, ?, ?, ?)',
-    [name, description, ingredients, steps]
+    'INSERT INTO recipes (title, ingredients, instructions, image) VALUES (?, ?, ?, ?)',
+    [title, ingredients, instructions, image]
   );
   return result.insertId;
 };
 
 
 const updateRecipe = async (id, recipe) => {
-  const { name, description, ingredients, steps } = recipe;
+  const { title, ingredients, instructions, image } = recipe;
   await db.query(
-    'UPDATE recipes SET name = ?, description = ?, ingredients = ?, steps = ? WHERE id = ?',
-    [name, description, ingredients, steps, id]
+    'UPDATE recipes SET title = ?, ingredients = ?, instructions = ?, image = ? WHERE id = ?',
+    [title, ingredients, instructions, image, id]
   );
 };
 

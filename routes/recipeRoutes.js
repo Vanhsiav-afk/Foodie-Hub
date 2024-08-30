@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const authenticateUser = require('../middlewares/authMiddleware');
 const recipeController = require('../controllers/recipeController');
-
+const upload = require('../middleware/uploadMiddleware');
 
 router.get('/', recipeController.getRecipes);
 router.get('/:id', recipeController.getRecipeById);
-router.post('/', recipeController.createRecipe);
-router.put('/:id', recipeController.updateRecipe);
-router.delete('/:id', recipeController.deleteRecipe);
+router.post('/', authenticateUser, upload.single('image'), recipeController.createRecipe);
+router.put('/:id', authenticateUser, recipeController.updateRecipe);
+router.delete('/:id', authenticateUser, recipeController.deleteRecipe);
 
 module.exports = router;

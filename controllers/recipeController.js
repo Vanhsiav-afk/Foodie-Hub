@@ -26,8 +26,17 @@ const getRecipeById = async (req, res) => {
 
 const createRecipe = async (req, res) => {
   try {
-    const recipeId = await Recipe.addRecipe(req.body);
-    res.status(201).json({ id: recipeId });
+    const { title, ingredients, instructions } = req.body;
+    const image = req.file ? req.file.path : null; 
+
+    const recipeId = await Recipe.addRecipe({
+      title,
+      ingredients,
+      instructions,
+      image
+    });
+
+    res.status(201).json({ id: recipeId, title, ingredients, instructions, image });
   } catch (error) {
     console.error('Error adding recipe:', error);
     res.status(500).send('Server Error');
@@ -36,7 +45,11 @@ const createRecipe = async (req, res) => {
 
 const updateRecipe = async (req, res) => {
   try {
-    await Recipe.updateRecipe(req.params.id, req.body);
+    const { title, ingredients, instructions } = req.body;
+    const image = req.file ? req.file.path : null;
+
+    await Recipe.updateRecipe(req.params.id, { title, ingredients, instructions, image });
+
     res.status(200).send('Recipe updated successfully');
   } catch (error) {
     console.error('Error updating recipe:', error);

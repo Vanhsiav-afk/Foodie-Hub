@@ -19,8 +19,10 @@
   "homepage": "https://github.com/Vanhsiav-afk/Foodie-Hub#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "compression": "^1.7.4",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "morgan": "^1.10.0",
     "mysql2": "^3.11.0"
   }
 }

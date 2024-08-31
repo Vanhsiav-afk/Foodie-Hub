@@ -14,9 +14,20 @@ const useInfiniteScroll = (url = '/recipes') => {
 
     try {
       const response = await axios.get(`${url}?page=${page}`);
-      const newRecipes = response.data || [];
-      setRecipes(prev => [...prev, ...newRecipes]);
-      setHasMore(newRecipes.length > 0);
+      const { recipes: newRecipes, total } = response.data;
+      console.log('Fetched Recipes:', newRecipes); // Debugging
+
+      // Ensure newRecipes is an array
+      if (Array.isArray(newRecipes)) {
+        if (newRecipes.length === 0) {
+          setHasMore(false);
+        } else {
+          setRecipes(prev => [...prev, ...newRecipes]);
+          setHasMore(newRecipes.length > 0);
+        }
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (err) {
       setError(err.message || 'An error occurred while fetching data');
     } finally {
@@ -44,24 +55,17 @@ const useInfiniteScroll = (url = '/recipes') => {
 
     const container = document.querySelector('.recipe-container');
     if (container) {
-      const debouncedHandleScroll = debounce(handleScroll, 200);
-      container.addEventListener('scroll', debouncedHandleScroll);
-
-      return () => {
-        container.removeEventListener('scroll', debouncedHandleScroll);
-      };
+      container.addEventListener('scroll', handleScroll);
     }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleScroll);
+      }
+    };
   }, [loading, hasMore]);
 
   return { recipes, loading, error, hasMore };
-};
-
-const debounce = (func, delay) => {
-  let timeoutId;
-  return (...args) => {
-    if (timeoutId) clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func.apply(null, args), delay);
-  };
 };
 
 export default useInfiniteScroll;

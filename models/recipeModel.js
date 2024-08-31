@@ -1,5 +1,8 @@
 const db = require('../db'); 
 
+const getRecipesWithPagination = async (limit, offset) => {
+  return await db.query('SELECT * FROM recipes LIMIT ? OFFSET ?', [limit, offset]);
+};
 
 const getAllRecipes = async () => {
   const [rows] = await db.query('SELECT * FROM recipes');
@@ -37,6 +40,7 @@ const deleteRecipe = async (id) => {
 };
 
 module.exports = {
+  getRecipesWithPagination,
   getAllRecipes,
   getRecipeById,
   addRecipe,

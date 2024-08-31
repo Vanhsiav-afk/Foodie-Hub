@@ -2,8 +2,19 @@ const Recipe = require('../models/recipeModel');
 
 const getRecipes = async (req, res) => {
   try {
-    const recipes = await Recipe.getAllRecipes();
-    res.json(recipes);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const [recipes] = await Recipe.getRecipesWithPagination(limit, offset);
+    const totalRecipes = await Recipe.getAllRecipes();
+
+    res.json({
+      recipes,
+      total: totalRecipes,
+      page,
+      totalPages: Math.ceil(totalRecipes / limit)
+    });
   } catch (error) {
     console.error('Error fetching recipes:', error);
     res.status(500).send('Server Error');

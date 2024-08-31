@@ -5,14 +5,13 @@ const useFetchRecipes = (url = '/recipes') => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const cache = useRef({}); // Cache to store fetched data
+  const cache = useRef({}); 
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
 
-      // Check if data is already cached
       if (cache.current[url]) {
         setRecipes(cache.current[url]);
         setLoading(false);

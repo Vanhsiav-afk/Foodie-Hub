@@ -14,17 +14,24 @@ const useInfiniteScroll = (url = '/recipes') => {
 
     try {
       const response = await axios.get(`${url}?page=${page}`);
-      const { recipes: newRecipes, total } = response.data;
-      console.log('Fetched Recipes:', newRecipes); // Debugging
+      const { recipes: newRecipes } = response.data;
+      console.log('Fetched Recipes:', newRecipes); 
 
-      // Ensure newRecipes is an array
+
       if (Array.isArray(newRecipes)) {
-        if (newRecipes.length === 0) {
-          setHasMore(false);
-        } else {
-          setRecipes(prev => [...prev, ...newRecipes]);
-          setHasMore(newRecipes.length > 0);
-        }
+        setRecipes(prev => {
+
+          const recipeMap = new Map(prev.map(recipe => [recipe.id, recipe]));
+
+
+          newRecipes.forEach(recipe => {
+            recipeMap.set(recipe.id, recipe);
+          });
+
+         
+          return Array.from(recipeMap.values());
+        });
+        setHasMore(newRecipes.length > 0);
       } else {
         throw new Error('Invalid response format');
       }
@@ -48,7 +55,7 @@ const useInfiniteScroll = (url = '/recipes') => {
       const containerHeight = container.clientHeight;
       const scrollHeight = container.scrollHeight;
 
-      if (scrollTop + containerHeight >= scrollHeight - 100 && !loading && hasMore) {
+      if (scrollTop + containerHeight >= scrollHeight  && !loading && hasMore) {
         setPage(prevPage => prevPage + 1);
       }
     };

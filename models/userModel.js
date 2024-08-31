@@ -1,6 +1,4 @@
 const db = require('../db'); // Import the database connection
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
 
 const getUserByUsername = async (username) => {
   try {
@@ -15,11 +13,9 @@ const getUserByUsername = async (username) => {
 const addUser = async (user) => {
   const { username, password } = user;
   try {
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
     const [result] = await db.query(
       'INSERT INTO users (username, password) VALUES (?, ?)',
-      [username, hashedPassword]
+      [username, password]
     );
     return result.insertId; 
   } catch (error) {
@@ -28,14 +24,11 @@ const addUser = async (user) => {
   }
 };
 
-
-const validatePassword = async (inputPassword, storedHashedPassword) => {
-  try {
-    return await bcrypt.compare(inputPassword, storedHashedPassword);
-  } catch (error) {
-    console.error('Error validating password:', error);
-    throw new Error('Password validation failed');
-  }
+// Remove validatePassword since we are no longer hashing passwords
+// Just return true or false for the sake of consistency in future changes
+const validatePassword = (inputPassword, storedHashedPassword) => {
+  // As passwords are stored in plain text, directly compare them
+  return inputPassword === storedHashedPassword;
 };
 
 module.exports = {

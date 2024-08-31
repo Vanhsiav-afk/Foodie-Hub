@@ -1,5 +1,4 @@
 const User = require('../models/userModel');
-const bcrypt = require('bcrypt');
 
 const registerUser = async (req, res) => {
   try {
@@ -9,9 +8,8 @@ const registerUser = async (req, res) => {
     if (existingUser) {
       return res.status(400).send('Username already exists');
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
     
-    const userId = await User.addUser({ username, password: hashedPassword });
+    const userId = await User.addUser({ username, password });
     req.session.user = { id: userId, username };
     res.status(201).json({ id: userId, message: 'User registered successfully' });
   } catch (error) {
@@ -20,30 +18,29 @@ const registerUser = async (req, res) => {
   }
 };
 
-
 const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    
     const user = await User.getUserByUsername(username);
     if (!user) {
       return res.status(404).send('User not found');
     }
 
-    
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = User.validatePassword(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).send('Invalid credentials');
     }
+
     req.session.user = { id: user.id, username };
 
-    res.status(200).send('Login successful');
+    res.status(200).json({ message: 'Login successful', user: { id: user.id, username } });
   } catch (error) {
     console.error('Error logging in user:', error);
     res.status(500).send('Server Error');
   }
 };
+
 const logoutUser = (req, res) => {
   req.session.destroy(err => {
     if (err) {

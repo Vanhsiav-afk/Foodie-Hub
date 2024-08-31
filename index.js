@@ -16,6 +16,7 @@ app.use(express.json());
 
 
 app.use(express.static(path.join(__dirname, 'foodiehub-frontend/build')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'default_secret',

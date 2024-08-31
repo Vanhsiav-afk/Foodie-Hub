@@ -17,20 +17,25 @@ const getRecipeById = async (id) => {
 
 
 const addRecipe = async (recipe) => {
-  const { title, ingredients, instructions, image } = recipe;
-  const [result] = await db.query(
-    'INSERT INTO recipes (title, ingredients, instructions, image) VALUES (?, ?, ?, ?)',
-    [title, ingredients, instructions, image]
-  );
-  return result.insertId;
+  const { name, ingredients, steps, image } = recipe;
+  try {
+    const [result] = await db.query(
+      'INSERT INTO recipes (name, ingredients, steps, image) VALUES (?, ?, ?, ?)',
+      [name, ingredients, steps, image]
+    );
+    return result.insertId;
+  } catch (error) {
+    console.error('Error adding recipe:', error);
+    throw new Error('Database query failed');
+  }
 };
 
 
 const updateRecipe = async (id, recipe) => {
-  const { title, ingredients, instructions, image } = recipe;
+  const { name, ingredients, steps, image } = recipe;
   await db.query(
-    'UPDATE recipes SET title = ?, ingredients = ?, instructions = ?, image = ? WHERE id = ?',
-    [title, ingredients, instructions, image, id]
+    'UPDATE recipes SET name = ?, ingredients = ?, steps = ?, image = ? WHERE id = ?',
+    [name, ingredients, steps, image, id]
   );
 };
 

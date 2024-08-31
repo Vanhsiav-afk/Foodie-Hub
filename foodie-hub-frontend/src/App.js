@@ -1,8 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, CssBaseline, Box } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { AppBar, Toolbar, Typography, CssBaseline, Box, Button } from '@mui/material';
 import RecipeList from './components/RecipeList';
 import RecipeDetail from './components/RecipeDetail';
+import RecipeCreate from './components/CreateRecipe';
+import RecipeEdit from './components/UpdateRecipe';
 
 const App = () => {
   return (
@@ -18,9 +20,14 @@ const App = () => {
         }}
       >
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'red' }}>
+          {/* Link to the home page */}
+          <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1, color: 'red', textDecoration: 'none' }}>
             FoodieHub
           </Typography>
+          {/* Button to create a new recipe */}
+          <Button component={Link} to="/recipes/create" variant="outlined" sx={{ color: 'white', borderColor: 'white' }}>
+            Create Recipe
+          </Button>
         </Toolbar>
       </AppBar>
 
@@ -48,6 +55,8 @@ const App = () => {
           <Routes>
             <Route path="/" element={<RecipeList />} />
             <Route path="/recipes/:id" element={<RecipeDetail />} />
+            <Route path="/recipes/create" element={<RecipeCreate />} />
+            <Route path="/recipes/edit/:id" element={<RecipeEdit />} />
           </Routes>
         </Box>
       </Box>

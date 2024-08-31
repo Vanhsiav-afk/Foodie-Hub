@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Container, Typography, CircularProgress, Alert, Box, Card, CardContent, CardMedia, useTheme } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Container, Typography, CircularProgress, Alert, Button } from '@mui/material';
 import axios from 'axios';
 
 const RecipeDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const theme = useTheme();
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -25,49 +25,58 @@ const RecipeDetail = () => {
     fetchRecipe();
   }, [id]);
 
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`/recipes/${id}`);
+      navigate('/');
+    } catch (err) {
+      setError('Failed to delete recipe');
+    }
+  };
+
+  const handleUpdate = () => {
+    navigate(`/recipes/edit/${id}`);
+  };
+
   if (loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress sx={{ color: 'red' }} />
-      </Box>
-    );
+    return <CircularProgress />;
   }
 
   if (error) {
-    return <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>;
+    return <Alert severity="error">{error}</Alert>;
   }
 
   return (
-    <Container maxWidth="md" sx={{ bgcolor: '#121212', color: 'white', p: 4, borderRadius: '12px' }}>
+    <Container>
       {recipe && (
-        <Box>
-          <Typography variant="h4" gutterBottom align="center" color={theme.palette.primary.main}>
-            {recipe.title}
+        <>
+          <Typography variant="h4" gutterBottom>
+            {recipe.name}
           </Typography>
-          <Card sx={{ mb: 4, borderRadius: '12px', overflow: 'hidden' }}>
-            <CardMedia
-              component="img"
-              height="300"
-              image={recipe.image || 'default-recipe.jpg'}
-              alt={recipe.title}
-              sx={{ objectFit: 'cover' }}
-            />
-            <CardContent sx={{ bgcolor: '#1c1c1c', color: 'white' }}>
-              <Typography variant="h6" gutterBottom>
-                Ingredients
-              </Typography>
-              <Typography variant="body1" paragraph>
-                {recipe.ingredients}
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                Instructions
-              </Typography>
-              <Typography variant="body1" paragraph>
-                {recipe.steps}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
+          <img
+            src={`/${recipe.image || 'default-recipe.jpg'}`} // Corrected image path format
+            alt={recipe.name}
+            style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }}
+          />
+          <Typography variant="h6" gutterBottom>
+            Ingredients
+          </Typography>
+          <Typography variant="body1" paragraph>
+            {recipe.ingredients}
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Instructions
+          </Typography>
+          <Typography variant="body1" paragraph>
+            {recipe.steps}
+          </Typography>
+          <Button onClick={handleUpdate} variant="contained" color="primary" sx={{ mr: 2 }}>
+            Update Recipe
+          </Button>
+          <Button onClick={handleDelete} variant="contained" color="error">
+            Delete Recipe
+          </Button>
+        </>
       )}
     </Container>
   );

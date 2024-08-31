@@ -3,7 +3,7 @@ const Recipe = require('../models/recipeModel');
 const getRecipes = async (req, res) => {
   try {
     const recipes = await Recipe.getAllRecipes();
-    res.render('recipes', { recipes });
+    res.json(recipes);
   } catch (error) {
     console.error('Error fetching recipes:', error);
     res.status(500).send('Server Error');
@@ -14,7 +14,7 @@ const getRecipeById = async (req, res) => {
   try {
     const recipe = await Recipe.getRecipeById(req.params.id);
     if (recipe) {
-      res.render('recipe', { recipe });
+      res.json(recipe);
     } else {
       res.status(404).send('Recipe not found');
     }

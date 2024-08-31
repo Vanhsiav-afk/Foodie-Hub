@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
 const registerUser = async (req, res) => {
@@ -18,6 +19,7 @@ const registerUser = async (req, res) => {
   }
 };
 
+
 const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -32,9 +34,14 @@ const loginUser = async (req, res) => {
       return res.status(401).send('Invalid credentials');
     }
 
-    req.session.user = { id: user.id, username };
 
-    res.status(200).json({ message: 'Login successful', user: { id: user.id, username } });
+    const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.status(200).json({
+      message: 'Login successful',
+      user: { id: user.id, username: user.username },
+      token 
+    });
   } catch (error) {
     console.error('Error logging in user:', error);
     res.status(500).send('Server Error');

@@ -37,20 +37,15 @@ const getRecipeById = async (req, res) => {
 
 const createRecipe = async (req, res) => {
   try {
-    const { name, ingredients, steps } = req.body; // Ensure these values are present
+    const { name, ingredients, steps } = req.body;
     const image = req.file ? req.file.path : null;
+    const userId = req.user.id; // Get userId from authenticated user
 
-    if (!name || !ingredients || !steps) { 
+    if (!name || !ingredients || !steps) {
       return res.status(400).send('Missing required fields');
     }
 
-    const recipeId = await Recipe.addRecipe({
-      name,
-      ingredients,
-      steps,
-      image
-    });
-
+    const recipeId = await Recipe.addRecipe({ name, ingredients, steps, image }, userId);
     res.status(201).json({ id: recipeId, name, ingredients, steps, image });
   } catch (error) {
     console.error('Error adding recipe:', error);
@@ -60,13 +55,11 @@ const createRecipe = async (req, res) => {
 
 const updateRecipe = async (req, res) => {
   try {
-    console.log('Request Body:', req.body);
-    console.log('Request File:', req.file);
-
     const { name, ingredients, steps } = req.body;
     const image = req.file ? req.file.path : null;
+    const userId = req.user.id;
 
-    await Recipe.updateRecipe(req.params.id, { name, ingredients, steps, image });
+    await Recipe.updateRecipe(req.params.id, { name, ingredients, steps, image }, userId);
 
     res.status(200).send('Recipe updated successfully');
   } catch (error) {
@@ -75,9 +68,11 @@ const updateRecipe = async (req, res) => {
   }
 };
 
+
 const deleteRecipe = async (req, res) => {
   try {
-    await Recipe.deleteRecipe(req.params.id);
+    const userId = req.user.id;
+    await Recipe.deleteRecipe(req.params.id, userId);
     res.status(200).send('Recipe deleted successfully');
   } catch (error) {
     console.error('Error deleting recipe:', error);

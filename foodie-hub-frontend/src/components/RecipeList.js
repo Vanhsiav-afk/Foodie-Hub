@@ -17,11 +17,11 @@ const RecipeList = () => {
   const theme = useTheme();
 
   if (loading && recipes.length === 0) {
-    return <CircularProgress sx={{ color: 'red', display: 'block', mx: 'auto' }} />;
+    return <CircularProgress sx={{ color: theme.palette.primary.main, display: 'block', mx: 'auto' }} />;
   }
 
   if (error) {
-    return <Alert severity="error">{error}</Alert>;
+    return <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>;
   }
 
   return (
@@ -66,16 +66,16 @@ const RecipeList = () => {
                 <Typography variant="h6" component="div">
                   {recipe.name}
                 </Typography>
-                <Typography variant="body2" color="grey-white">
-                  {recipe.description}
+                <Typography variant="body2" color="white">
+                  {recipe.description || 'No description available'}
                 </Typography>
               </CardContent>
             </Card>
           </Link>
         </Box>
       ))}
-      {loading && <CircularProgress sx={{ color: 'red', display: 'block', mx: 'auto' }} />}
-      {!hasMore && <Typography variant="body2" color="text.secondary" align="center">No more recipes to load</Typography>}
+      {loading && <CircularProgress sx={{ color: theme.palette.primary.main, display: 'block', mx: 'auto' }} />}
+      {!hasMore && <Typography variant="body2" color="white" align="center">No more recipes to load</Typography>}
     </Box>
   );
 };

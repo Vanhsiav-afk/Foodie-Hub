@@ -16,12 +16,12 @@ const getRecipeById = async (id) => {
 };
 
 
-const addRecipe = async (recipe) => {
+const addRecipe = async (recipe, userId) => {
   const { name, ingredients, steps, image } = recipe;
   try {
     const [result] = await db.query(
-      'INSERT INTO recipes (name, ingredients, steps, image) VALUES (?, ?, ?, ?)',
-      [name, ingredients, steps, image]
+      'INSERT INTO recipes (name, ingredients, steps, image, user_id) VALUES (?, ?, ?, ?, ?)',
+      [name, ingredients, steps, image, userId]
     );
     return result.insertId;
   } catch (error) {
@@ -31,17 +31,17 @@ const addRecipe = async (recipe) => {
 };
 
 
-const updateRecipe = async (id, recipe) => {
+const updateRecipe = async (id, recipe, userId) => {
   const { name, ingredients, steps, image } = recipe;
   await db.query(
-    'UPDATE recipes SET name = ?, ingredients = ?, steps = ?, image = ? WHERE id = ?',
-    [name, ingredients, steps, image, id]
+    'UPDATE recipes SET name = ?, ingredients = ?, steps = ?, image = ? WHERE id = ? AND user_id = ?',
+    [name, ingredients, steps, image, id, userId]
   );
 };
 
 
-const deleteRecipe = async (id) => {
-  await db.query('DELETE FROM recipes WHERE id = ?', [id]);
+const deleteRecipe = async (id, userId) => {
+  await db.query('DELETE FROM recipes WHERE id = ? AND user_id = ?', [id, userId]);
 };
 
 module.exports = {

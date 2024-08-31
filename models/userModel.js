@@ -1,4 +1,4 @@
-const db = require('../db'); // Import the database connection
+const db = require('../db'); 
 
 const getUserByUsername = async (username) => {
   try {
@@ -24,10 +24,9 @@ const addUser = async (user) => {
   }
 };
 
-// Remove validatePassword since we are no longer hashing passwords
-// Just return true or false for the sake of consistency in future changes
+
 const validatePassword = (inputPassword, storedHashedPassword) => {
-  // As passwords are stored in plain text, directly compare them
+  
   return inputPassword === storedHashedPassword;
 };
 

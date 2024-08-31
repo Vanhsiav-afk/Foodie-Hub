@@ -3,9 +3,9 @@ import { Container, TextField, Button, Typography, Alert } from '@mui/material';
 import axios from 'axios';
 
 const CreateRecipe = () => {
-  const [name, setname] = useState('');
+  const [name, setName] = useState('');
   const [ingredients, setIngredients] = useState('');
-  const [steps, setsteps] = useState('');
+  const [steps, setSteps] = useState('');
   const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -19,11 +19,16 @@ const CreateRecipe = () => {
     if (image) formData.append('image', image);
 
     try {
-      await axios.post('/recipes', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      await axios.post('/recipes', formData, { 
+        headers: { 
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        } 
+      });
       setSuccess('Recipe created successfully');
-      setname('');
+      setName('');
       setIngredients('');
-      setsteps('');
+      setSteps('');
       setImage(null);
     } catch (err) {
       setError('Failed to create recipe');
@@ -41,11 +46,11 @@ const CreateRecipe = () => {
       <Typography variant="h4" gutterBottom>Create Recipe</Typography>
       <form onSubmit={handleSubmit}>
         <TextField
-          label="name"
+          label="Name"
           fullWidth
           margin="normal"
           value={name}
-          onChange={(e) => setname(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           InputProps={{ style: { color: '#FFFFFF' } }} // White text for input fields
           InputLabelProps={{ style: { color: '#FFFFFF' } }} // White label text
           sx={{ backgroundColor: '#333333', borderRadius: 1 }} // Dark background for inputs
@@ -63,13 +68,13 @@ const CreateRecipe = () => {
           sx={{ backgroundColor: '#333333', borderRadius: 1 }} // Dark background for inputs
         />
         <TextField
-          label="steps"
+          label="Steps"
           fullWidth
           margin="normal"
           multiline
           rows={4}
           value={steps}
-          onChange={(e) => setsteps(e.target.value)}
+          onChange={(e) => setSteps(e.target.value)}
           InputProps={{ style: { color: '#FFFFFF' } }} // White text for input fields
           InputLabelProps={{ style: { color: '#FFFFFF' } }} // White label text
           sx={{ backgroundColor: '#333333', borderRadius: 1 }} // Dark background for inputs
@@ -78,7 +83,14 @@ const CreateRecipe = () => {
           type="file"
           accept="image/*"
           onChange={(e) => setImage(e.target.files[0])}
-          style={{ margin: '16px 0', color: '#FFFFFF' }} // Adjust file input color
+          style={{ 
+            margin: '16px 0', 
+            color: '#FFFFFF',
+            backgroundColor: '#333333', // Dark background for file input
+            border: '1px solid #FFFFFF',
+            borderRadius: '4px',
+            padding: '8px'
+          }} 
         />
         <Button 
           type="submit" 

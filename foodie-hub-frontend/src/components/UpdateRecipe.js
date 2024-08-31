@@ -7,9 +7,9 @@ const UpdateRecipe = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
-  const [name, setname] = useState('');
+  const [name, setName] = useState('');
   const [ingredients, setIngredients] = useState('');
-  const [steps, setsteps] = useState('');
+  const [steps, setSteps] = useState('');
   const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -19,9 +19,9 @@ const UpdateRecipe = () => {
       try {
         const response = await axios.get(`/recipes/${id}`);
         setRecipe(response.data);
-        setname(response.data.name);
+        setName(response.data.name);
         setIngredients(response.data.ingredients);
-        setsteps(response.data.steps);
+        setSteps(response.data.steps);
       } catch (err) {
         setError('Failed to fetch recipe details');
       }
@@ -37,19 +37,20 @@ const UpdateRecipe = () => {
     formData.append('ingredients', ingredients);
     formData.append('steps', steps);
     if (image) formData.append('image', image);
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
-  
+    
     try {
-        await axios.put(`/recipes/${id}`, formData);
+      await axios.put(`/recipes/${id}`, formData, { 
+        headers: { 
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        } 
+      });
       setSuccess('Recipe updated successfully');
       navigate(`/recipes/${id}`);
     } catch (err) {
       setError('Failed to update recipe');
     }
   };
-  
 
   if (!recipe) return <div>Loading...</div>;
 
@@ -64,11 +65,11 @@ const UpdateRecipe = () => {
       <Typography variant="h4" gutterBottom>Update Recipe</Typography>
       <form onSubmit={handleSubmit}>
         <TextField
-          label="name"
+          label="Name"
           fullWidth
           margin="normal"
           value={name}
-          onChange={(e) => setname(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           InputProps={{ style: { color: '#FFFFFF' } }} // White text for input fields
           InputLabelProps={{ style: { color: '#FFFFFF' } }} // White label text
           sx={{ backgroundColor: '#333333', borderRadius: 1 }} // Dark background for inputs
@@ -86,13 +87,13 @@ const UpdateRecipe = () => {
           sx={{ backgroundColor: '#333333', borderRadius: 1 }} // Dark background for inputs
         />
         <TextField
-          label="steps"
+          label="Steps"
           fullWidth
           margin="normal"
           multiline
           rows={4}
           value={steps}
-          onChange={(e) => setsteps(e.target.value)}
+          onChange={(e) => setSteps(e.target.value)}
           InputProps={{ style: { color: '#FFFFFF' } }} // White text for input fields
           InputLabelProps={{ style: { color: '#FFFFFF' } }} // White label text
           sx={{ backgroundColor: '#333333', borderRadius: 1 }} // Dark background for inputs
@@ -101,7 +102,14 @@ const UpdateRecipe = () => {
           type="file"
           accept="image/*"
           onChange={(e) => setImage(e.target.files[0])}
-          style={{ margin: '16px 0', color: '#FFFFFF' }} // Adjust file input color
+          style={{ 
+            margin: '16px 0', 
+            color: '#FFFFFF', // Adjust file input color
+            backgroundColor: '#333333', // Dark background for file input
+            border: '1px solid #FFFFFF',
+            borderRadius: '4px',
+            padding: '8px'
+          }} 
         />
         <Button 
           type="submit" 

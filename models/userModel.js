@@ -1,5 +1,13 @@
 const db = require('../db'); 
-
+const getUserById = async (userId) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+    return rows[0];
+  } catch (error) {
+    console.error('Error fetching user by ID:', error);
+    throw new Error('Database query failed');
+  }
+};
 const getUserByUsername = async (username) => {
   try {
     const [rows] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
@@ -31,6 +39,7 @@ const validatePassword = (inputPassword, storedHashedPassword) => {
 };
 
 module.exports = {
+  getUserById,
   getUserByUsername,
   addUser,
   validatePassword

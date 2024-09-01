@@ -58,8 +58,22 @@ const logoutUser = (req, res) => {
   });
 };
 
+const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.getUserById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ error: 'An error occurred while fetching the user profile' });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
-  logoutUser
+  logoutUser,
+  getUserProfile,
 };

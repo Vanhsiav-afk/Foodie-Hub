@@ -7,6 +7,8 @@ import RecipeCreate from './components/CreateRecipe';
 import RecipeEdit from './components/UpdateRecipe';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
+import Preferences from './components/Preferences';
+import UserProfile from './components/UserProfile';
 
 const App = () => {
   return (
@@ -41,6 +43,8 @@ const App = () => {
             <Route path="/recipes/edit/:id" element={<RecipeEdit />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/preferences" element={<Preferences />} />
+            <Route path="/profile/:userId" element={<UserProfile />} />
           </Routes>
         </Box>
       </Box>
@@ -48,14 +52,15 @@ const App = () => {
   );
 };
 
-
 const AppBarWithNavigation = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const userId = localStorage.getItem('userId');
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); 
-    navigate('/'); 
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId'); 
+    navigate('/login');
   };
 
   return (
@@ -72,8 +77,14 @@ const AppBarWithNavigation = () => {
         <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1, color: 'red', textDecoration: 'none' }}>
           FoodieHub
         </Typography>
+        <Button component={Link} to="/preferences" variant="outlined" sx={{ color: 'white', borderColor: 'white', mx: 1 }}>
+          Preferences
+        </Button>
         {token ? (
           <>
+            <Button component={Link} to={`/profile/${userId}`} variant="outlined" sx={{ color: 'white', borderColor: 'white', mx: 1 }}>
+              My Profile
+            </Button>
             <Button component={Link} to="/recipes/create" variant="outlined" sx={{ color: 'white', borderColor: 'white', mx: 1 }}>
               Create Recipe
             </Button>

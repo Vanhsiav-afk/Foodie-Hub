@@ -1,5 +1,14 @@
 const db = require('../db'); 
 
+const getRecipesByUser = async (userId) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM recipes WHERE user_id = ?', [userId]);
+    return rows;
+  } catch (error) {
+    console.error('Error fetching recipes by user:', error);
+    throw new Error('Database query failed');
+  }
+};
 const getRecipesWithPagination = async (limit, offset) => {
   return await db.query('SELECT * FROM recipes LIMIT ? OFFSET ?', [limit, offset]);
 };
@@ -45,6 +54,7 @@ const deleteRecipe = async (id, userId) => {
 };
 
 module.exports = {
+  getRecipesByUser,
   getRecipesWithPagination,
   getAllRecipes,
   getRecipeById,

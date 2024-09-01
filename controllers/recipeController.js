@@ -80,10 +80,25 @@ const deleteRecipe = async (req, res) => {
   }
 };
 
+const getRecipesByUser = async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const recipes = await Recipe.getRecipesByUser(userId);
+    if (!recipes.length) {
+      return res.status(404).json({ error: 'No recipes found for this user' });
+    }
+    res.json(recipes);
+  } catch (error) {
+    console.error('Error fetching recipes by user:', error);
+    res.status(500).json({ error: 'An error occurred while fetching recipes' });
+  }
+};
+
 module.exports = {
   getRecipes,
   getRecipeById,
   createRecipe,
   updateRecipe,
-  deleteRecipe
+  deleteRecipe,
+  getRecipesByUser,
 };

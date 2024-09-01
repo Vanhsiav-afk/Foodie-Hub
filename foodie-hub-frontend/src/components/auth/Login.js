@@ -13,6 +13,7 @@ const Login = () => {
     try {
       const response = await axios.post('/users/login', { username, password });
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.user.id);
       navigate('/');
     } catch (err) {
       setError(err.response?.data || 'An error occurred');
@@ -22,8 +23,8 @@ const Login = () => {
   return (
     <Container 
       sx={{ 
-        bgcolor: '#000000', // Black background
-        color: '#FFFFFF', // White text color
+        bgcolor: '#000000', 
+        color: '#FFFFFF', 
         p: 3,
         borderRadius: 2,
         boxShadow: 3,

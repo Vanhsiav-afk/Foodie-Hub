@@ -70,10 +70,41 @@ const getUserProfile = async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching the user profile' });
   }
 };
+const getUserPreferences = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const preferences = await User.getUserPreferences(userId);
+    
+    if (!preferences) {
+      return res.status(404).json({ error: 'Preferences not found for this user.' });
+    }
+
+    res.json(preferences);
+  } catch (error) {
+    console.error('Error fetching preferences:', error);
+    res.status(500).json({ error: 'An error occurred while fetching preferences.' });
+  }
+};
+
+const saveUserPreferences = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const preferences = req.body;
+
+    await User.saveUserPreferences(userId, preferences);
+
+    res.status(200).json({ message: 'Preferences saved successfully' });
+  } catch (error) {
+    console.error('Error saving preferences:', error);
+    res.status(500).json({ error: 'An error occurred while saving preferences.' });
+  }
+};
 
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   getUserProfile,
+  getUserPreferences,
+  saveUserPreferences
 };

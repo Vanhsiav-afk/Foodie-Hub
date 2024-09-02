@@ -77,13 +77,13 @@ const AppBarWithNavigation = () => {
         <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1, color: 'red', textDecoration: 'none' }}>
           FoodieHub
         </Typography>
-        <Button component={Link} to="/preferences" variant="outlined" sx={{ color: 'white', borderColor: 'white', mx: 1 }}>
-          Preferences
-        </Button>
         {token ? (
           <>
             <Button component={Link} to={`/profile/${userId}`} variant="outlined" sx={{ color: 'white', borderColor: 'white', mx: 1 }}>
               My Profile
+            </Button>
+            <Button component={Link} to="/preferences" variant="outlined" sx={{ color: 'white', borderColor: 'white', mx: 1 }}>
+              Preferences
             </Button>
             <Button component={Link} to="/recipes/create" variant="outlined" sx={{ color: 'white', borderColor: 'white', mx: 1 }}>
               Create Recipe

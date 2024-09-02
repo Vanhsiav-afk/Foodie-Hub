@@ -8,7 +8,9 @@ router.post('/login', userController.loginUser);
 router.get('/logout', userController.logoutUser);
 
 router.get('/:userId/profile', userController.getUserProfile);
-
 router.get('/:userId/recipes', recipeController.getRecipesByUser);
+
+router.get('/:userId/preferences', userController.getUserPreferences);
+router.post('/:userId/preferences', userController.saveUserPreferences);
 
 module.exports = router;
